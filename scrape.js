@@ -1,12 +1,14 @@
-var image_downloader = require('image-downloader');
 var scraperjs = require('scraperjs');
-var scrapeLink = "http://www.android-gems.com/user/thatkole?type=favorite&info_start=420";
-const gitclone = require('gitclone');
+var fs = require('fs');
 
-var num = 22
+var num = 1
 var dirNum = "./page_"+num;
 
-var fs = require('fs');
+scrape(0,dirNum);
+
+function scrape(pg, dir){
+
+var scrapeLink = "http://www.android-gems.com/user/thatkole?type=favorite&info_start="+pg;
 
 scraperjs.StaticScraper.create(scrapeLink)
 	.scrape(function($) {
@@ -36,12 +38,7 @@ scraperjs.StaticScraper.create(scrapeLink)
 	.then(function(news) {
 		//console.log(news.repopics[0]);
 
-		// clones with SSH 
-		//gitclone('node-minibase/minibase', true)
-
-		// Download to a directory and save with the original filename 
-
-		if (!fs.existsSync(dirNum)){
+		if (!fs.existsSync(dir)){
 			fs.mkdirSync(dirNum);
 		}
 
@@ -51,26 +48,13 @@ scraperjs.StaticScraper.create(scrapeLink)
 			if(err) {
 				return console.log(err);
 			}
-
-			console.log("The file was saved!");
+			console.log("The bckup file was saved!");
 		}); 
 
-		for(var i = 0; i < news.repopics.length; i++){
-			//console.log(news.repopics[i]);
-				console.log('saving', news.repopics[i]);
-
-			var options = {
-				url: news.repopics[i],
-				dest: dirNum,
-				done: function(err, filename, image) {
-					if (err) {
-						throw err;
-					}
-					console.log('file saved to', filename);
-				},
-			};
-
-			image_downloader(options);
-		}
+		//for(var i = 0; i < news.repopics.length; i++){
+				//console.log('saving', news.repopics[i]);
+		//}
 
 	})
+
+}

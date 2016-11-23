@@ -1,0 +1,21 @@
+{
+  "name": "android-gem-scraper",
+  "version": "1.0.0",
+  "description": "scrapes pages of android gems",
+  "main": "scrape.js",
+  "dependencies": {
+    "fast-image-downloader": "^0.0.4",
+    "gitclone": "^2.0.0",
+    "scraperjs": "^1.2.0",
+    "image-downloader": "^2.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "scraper"
+  ],
+  "author": "colleowino",
+  "license": "ISC"
+}
