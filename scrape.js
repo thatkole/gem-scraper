@@ -7,6 +7,10 @@ var dirNum = "page_"+num;
 
 scrape(0,dirNum);
 
+for (s = 1; s < 3; s++){
+
+}
+
 function puts(error, stdout, stderr) { 
 	if(error){
 		console.log(error); 
@@ -49,8 +53,6 @@ scraperjs.StaticScraper.create(scrapeLink)
 			fs.mkdirSync(dirNum);
 		}
 
-		var util = require('util');
-
 		fs.writeFile(dirNum+"/manifest.json", JSON.stringify(gems,null,2), function(err) {
 			if(err) {
 				return console.log(err);
@@ -60,12 +62,21 @@ scraperjs.StaticScraper.create(scrapeLink)
 
 		for(var i = 0; i < gems.repopics.length; i++){
 			//exec("wget -nc -P "+dir+" "+gems.repopics[i] , puts);
+			console.log("downloading: "+gems.repopics[i]);
 		}
 
 		for(var i = 0; i < gems.ghlinks.length; i++){
 			//exec("wget -nc -P "+dir+" "+gems.repopics[i] , puts);
-			console.log(gems.ghlinks[i]);
+
+			var ghbase = 'https://github.com/';
+			var clone = ghbase+gems.ghlinks[i];
+
+			//exec("git clone "+clone, { cwd: dir}, puts);
+			console.log("cloning: "+clone);
+
 		}
+		
+		console.log("show's over");
 
 	})
 
