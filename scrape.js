@@ -2,12 +2,12 @@ var scraperjs = require('scraperjs');
 var exec = require('child_process').exec;
 var fs = require('fs');
 
-var startpoint = 0
+var startpoint = 50
 
-for (s = 1; s < 2; s++){
-	var dirNum = "page_"+s;
-	console.log("going for: "+dirNum+" starting:"+startpoint);
-	scrape(startpoint,dirNum);
+for (s = 3; s < 4; s++){
+	var folder = "page_"+s;
+	console.log("going for: "+folder+" starting:"+startpoint);
+	scrape(startpoint,folder);
 	startpoint= startpoint+20;
 }
 
@@ -17,9 +17,11 @@ function puts(error, stdout, stderr) {
 	}
 }
 
-function scrape(pg, dir){
+function scrape(count, dwnl_folder){
 
-var scrapeLink = "http://www.android-gems.com/user/thatkole?type=favorite&info_start="+pg;
+var scrapeLink = "http://www.android-gems.com/user/thatkole?type=favorite&info_start="+count;
+
+console.log(scrapeLink);
 
 scraperjs.StaticScraper.create(scrapeLink)
 	.scrape(function($) {
@@ -48,31 +50,31 @@ scraperjs.StaticScraper.create(scrapeLink)
 	})
 	.then(function(gems) {
 
-		if (!fs.existsSync(dir)){
-			fs.mkdirSync(dirNum);
+		if (!fs.existsSync(dwnl_folder)){
+			console.log("making dir: "+dwnl_folder);
+			fs.mkdirSync(dwnl_folder);
 		}
 
-		fs.writeFile(dirNum+"/manifest.json", JSON.stringify(gems,null,2), function(err) {
+		fs.writeFile(dwnl_folder+"/manifest.json", JSON.stringify(gems,null,2), function(err) {
 			if(err) {
 				return console.log(err);
 			}
-			console.log("The bckup"+dir+" file was saved!");
+			console.log("saved bckup @ "+dwnl_folder);
 		}); 
 
 		for(var i = 0; i < gems.repopics.length; i++){
-			exec("wget -nc -P "+dir+" "+gems.repopics[i] , puts);
-			console.log("downloading: "+gems.repopics[i]);
+			//exec("wget -nc -P "+dwnl_folder+" "+gems.repopics[i] , puts);
+			//console.log("downloading: "+gems.repopics[i]);
 		}
 
 		for(var i = 0; i < gems.ghlinks.length; i++){
 			var ghbase = 'https://github.com/';
 			var clone = ghbase+gems.ghlinks[i];
 
-			exec("git clone "+clone, { cwd: dir}, puts);
-			console.log("cloning: "+clone);
+			//exec("git clone "+clone, { cwd: dwnl_folder}, puts);
+			//console.log("cloning: "+clone);
 		}
 		
-
 	})
 
 }
