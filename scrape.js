@@ -2,10 +2,12 @@ var scraperjs = require('scraperjs');
 var exec = require('child_process').exec;
 var fs = require('fs');
 
+const path = require('path');
+
 var startpage = 2
 var startpoint = (20 * startpage) - 20; //page 1 has 0 startingpoint
 
-for (s = startpage; s < 23; s++){
+for (s = startpage; s < 3; s++){
 	var folder = "page_"+s;
 	console.log("going for: "+folder+" starting:"+startpoint);
 	scrape(startpoint,folder);
@@ -15,6 +17,14 @@ for (s = startpage; s < 23; s++){
 function puts(error, stdout, stderr) { 
 	if(error){
 		console.log(error); 
+	}
+}
+
+function fetchImages(imglist, dir) {
+	for(var i = 1; i < imglist.length; i++){
+		var aPic = imglist.repopics[i];
+		//exec("wget -nc -p "+dwnl_folder+" "+aPic, puts);
+		console.log("downloading: "+path.basename(aPic));
 	}
 }
 
@@ -64,17 +74,14 @@ scraperjs.StaticScraper.create(scrapeLink)
 			console.log("saved bckup @ "+dwnl_folder);
 		}); 
 
-		for(var i = 0; i < gems.repopics.length; i++){
-			exec("wget -nc -P "+dwnl_folder+" "+gems.repopics[i] , puts);
-			console.log("downloading: "+gems.repopics[i]);
-		}
+		fetchImages(gems.repopics,dwnl_folder);
 
 		for(var i = 0; i < gems.ghlinks.length; i++){
 			var ghbase = 'https://github.com/';
 			var clone = ghbase+gems.ghlinks[i];
 
-			exec("git clone "+clone, { cwd: dwnl_folder}, puts);
-			console.log("cloning: "+clone);
+			//exec("git clone "+clone, { cwd: dwnl_folder}, puts);
+			//console.log("cloning: "+clone);
 		}
 		
 	})
