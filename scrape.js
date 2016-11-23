@@ -2,9 +2,10 @@ var scraperjs = require('scraperjs');
 var exec = require('child_process').exec;
 var fs = require('fs');
 
-var startpoint = 50
+var startpage = 2
+var startpoint = (20 * startpage) - 20; //page 1 has 0 startingpoint
 
-for (s = 3; s < 4; s++){
+for (s = startpage; s < 4; s++){
 	var folder = "page_"+s;
 	console.log("going for: "+folder+" starting:"+startpoint);
 	scrape(startpoint,folder);
@@ -19,7 +20,9 @@ function puts(error, stdout, stderr) {
 
 function scrape(count, dwnl_folder){
 
-var scrapeLink = "http://www.android-gems.com/user/thatkole?type=favorite&info_start="+count;
+//var scrapeLink = "http://www.android-gems.com/user/thatkole?type=favorite&info_start="+count;
+	
+var scrapeLink = "http://www.android-gems.com/user/thatkole/?type=favorite&uid=1551650237972482&pageinfo_start="+startpoint;
 
 console.log(scrapeLink);
 
@@ -51,7 +54,6 @@ scraperjs.StaticScraper.create(scrapeLink)
 	.then(function(gems) {
 
 		if (!fs.existsSync(dwnl_folder)){
-			console.log("making dir: "+dwnl_folder);
 			fs.mkdirSync(dwnl_folder);
 		}
 
