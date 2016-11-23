@@ -20,6 +20,16 @@ function puts(error, stdout, stderr) {
 	}
 }
 
+function writeManifest(data,dir) {
+
+	fs.writeFile(dir+"/manifest.json", JSON.stringify(data,null,2), function(err) {
+		if(err) {
+			return console.log(err);
+		}
+		console.log("saved bckup @ "+dir);
+	}); 
+}
+
 function fetchImages(imglist, dir) {
 	for(var i = 0; i < imglist.length; i++){
 		var aPic = imglist[i];
@@ -72,13 +82,7 @@ scraperjs.StaticScraper.create(scrapeLink)
 			fs.mkdirSync(dwnl_folder);
 		}
 
-		fs.writeFile(dwnl_folder+"/manifest.json", JSON.stringify(gems,null,2), function(err) {
-			if(err) {
-				return console.log(err);
-			}
-			console.log("saved bckup @ "+dwnl_folder);
-		}); 
-
+		writeManifest(gems,dwnl_folder)
 		fetchImages(gems.repopics,dwnl_folder);
 		cloneRepos(gems.ghlinks,dwnl_folder);
 
