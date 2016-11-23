@@ -5,7 +5,7 @@ var fs = require('fs');
 var startpage = 2
 var startpoint = (20 * startpage) - 20; //page 1 has 0 startingpoint
 
-for (s = startpage; s < 4; s++){
+for (s = startpage; s < 23; s++){
 	var folder = "page_"+s;
 	console.log("going for: "+folder+" starting:"+startpoint);
 	scrape(startpoint,folder);
@@ -65,16 +65,16 @@ scraperjs.StaticScraper.create(scrapeLink)
 		}); 
 
 		for(var i = 0; i < gems.repopics.length; i++){
-			//exec("wget -nc -P "+dwnl_folder+" "+gems.repopics[i] , puts);
-			//console.log("downloading: "+gems.repopics[i]);
+			exec("wget -nc -P "+dwnl_folder+" "+gems.repopics[i] , puts);
+			console.log("downloading: "+gems.repopics[i]);
 		}
 
 		for(var i = 0; i < gems.ghlinks.length; i++){
 			var ghbase = 'https://github.com/';
 			var clone = ghbase+gems.ghlinks[i];
 
-			//exec("git clone "+clone, { cwd: dwnl_folder}, puts);
-			//console.log("cloning: "+clone);
+			exec("git clone "+clone, { cwd: dwnl_folder}, puts);
+			console.log("cloning: "+clone);
 		}
 		
 	})
