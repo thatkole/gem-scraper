@@ -11,7 +11,6 @@ function puts(error, stdout, stderr) {
 	if(error){
 		console.log(error); 
 	}
-  console.log(`stdout: ${stdout}`);
 }
 
 function scrape(pg, dir){
@@ -52,7 +51,7 @@ scraperjs.StaticScraper.create(scrapeLink)
 
 		var util = require('util');
 
-		fs.writeFile(dirNum+"/manifest", util.inspect(gems), function(err) {
+		fs.writeFile(dirNum+"/manifest.json", JSON.stringify(gems,null,2), function(err) {
 			if(err) {
 				return console.log(err);
 			}
@@ -60,8 +59,12 @@ scraperjs.StaticScraper.create(scrapeLink)
 		}); 
 
 		for(var i = 0; i < gems.repopics.length; i++){
-			//console.log('saving', gems.repopics[i]);
-			exec("wget -nc -P "+dir+" "+gems.repopics[i] , puts);
+			//exec("wget -nc -P "+dir+" "+gems.repopics[i] , puts);
+		}
+
+		for(var i = 0; i < gems.ghlinks.length; i++){
+			//exec("wget -nc -P "+dir+" "+gems.repopics[i] , puts);
+			console.log(gems.ghlinks[i]);
 		}
 
 	})
