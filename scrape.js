@@ -2,13 +2,13 @@ var scraperjs = require('scraperjs');
 var exec = require('child_process').exec;
 var fs = require('fs');
 
-var num = 1
-var dirNum = "page_"+num;
+var startpoint = 0
 
-scrape(0,dirNum);
-
-for (s = 1; s < 3; s++){
-
+for (s = 1; s < 2; s++){
+	var dirNum = "page_"+s;
+	console.log("going for: "+dirNum+" starting:"+startpoint);
+	scrape(startpoint,dirNum);
+	startpoint= startpoint+20;
 }
 
 function puts(error, stdout, stderr) { 
@@ -47,7 +47,6 @@ scraperjs.StaticScraper.create(scrapeLink)
 		return endpoint;
 	})
 	.then(function(gems) {
-		//console.log(gems.repopics[0]);
 
 		if (!fs.existsSync(dir)){
 			fs.mkdirSync(dirNum);
@@ -61,22 +60,18 @@ scraperjs.StaticScraper.create(scrapeLink)
 		}); 
 
 		for(var i = 0; i < gems.repopics.length; i++){
-			//exec("wget -nc -P "+dir+" "+gems.repopics[i] , puts);
+			exec("wget -nc -P "+dir+" "+gems.repopics[i] , puts);
 			console.log("downloading: "+gems.repopics[i]);
 		}
 
 		for(var i = 0; i < gems.ghlinks.length; i++){
-			//exec("wget -nc -P "+dir+" "+gems.repopics[i] , puts);
-
 			var ghbase = 'https://github.com/';
 			var clone = ghbase+gems.ghlinks[i];
 
-			//exec("git clone "+clone, { cwd: dir}, puts);
+			exec("git clone "+clone, { cwd: dir}, puts);
 			console.log("cloning: "+clone);
-
 		}
 		
-		console.log("show's over");
 
 	})
 
