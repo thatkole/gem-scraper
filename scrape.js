@@ -21,20 +21,25 @@ function puts(error, stdout, stderr) {
 }
 
 function fetchImages(imglist, dir) {
-	for(var i = 1; i < imglist.length; i++){
-		var aPic = imglist.repopics[i];
+	for(var i = 0; i < imglist.length; i++){
+		var aPic = imglist[i];
 		//exec("wget -nc -p "+dwnl_folder+" "+aPic, puts);
 		console.log("downloading: "+path.basename(aPic));
 	}
 }
 
+function cloneRepos(repolist, dir) {
+	for(var i = 0; i < repolist.length; i++){
+		var ghbase = 'https://github.com/';
+		var clone = ghbase+repolist[i];
+		//exec("git clone "+clone, { cwd: dwnl_folder}, puts);
+		console.log("cloning: "+clone);
+	}
+}
+
 function scrape(count, dwnl_folder){
 
-//var scrapeLink = "http://www.android-gems.com/user/thatkole?type=favorite&info_start="+count;
-	
 var scrapeLink = "http://www.android-gems.com/user/thatkole/?type=favorite&uid=1551650237972482&pageinfo_start="+startpoint;
-
-console.log(scrapeLink);
 
 scraperjs.StaticScraper.create(scrapeLink)
 	.scrape(function($) {
@@ -75,15 +80,8 @@ scraperjs.StaticScraper.create(scrapeLink)
 		}); 
 
 		fetchImages(gems.repopics,dwnl_folder);
+		cloneRepos(gems.ghlinks,dwnl_folder);
 
-		for(var i = 0; i < gems.ghlinks.length; i++){
-			var ghbase = 'https://github.com/';
-			var clone = ghbase+gems.ghlinks[i];
-
-			//exec("git clone "+clone, { cwd: dwnl_folder}, puts);
-			//console.log("cloning: "+clone);
-		}
-		
 	})
 
 }
