@@ -9,7 +9,7 @@ var startpoint = (20 * startpage) - 20; //page 1 has 0 startingpoint
 
 for (s = startpage; s < 3; s++){
 	var folder = "page_"+s;
-	console.log("going for: "+folder+" starting:"+startpoint);
+	console.log("going for: "+folder+" starting:"+startpoint+"\n");
 	scrape(startpoint,folder);
 	startpoint= startpoint+20;
 }
@@ -30,20 +30,51 @@ function writeManifest(data,dir) {
 	}); 
 }
 
-function fetchImages(imglist, dir) {
+function fetchImages(gems, dir) {
+
+	var imglist = gems.repopics;
+
 	for(var i = 0; i < imglist.length; i++){
 		var aPic = imglist[i];
-		//exec("wget -nc -p "+dwnl_folder+" "+aPic, puts);
-		console.log("downloading: "+path.basename(aPic));
+		var completed = 0;
+		var child = exec("wget -nc -P "+dir+" "+aPic, puts);
+
+		child.on('close', function(code) {
+			completed++;
+			console.log("downloaded: "+completed+"/"+imglist.length);
+
+			if(completed == imglist.length){
+				console.log("\n\n Cloning repos.\n");
+				cloneRepos(gems.ghlinks,dir);
+			}
+		});
+
 	}
 }
 
 function cloneRepos(repolist, dir) {
 	for(var i = 0; i < repolist.length; i++){
+		var clonedRepos = 0;
 		var ghbase = 'https://github.com/';
 		var clone = ghbase+repolist[i];
-		//exec("git clone "+clone, { cwd: dwnl_folder}, puts);
-		console.log("cloning: "+clone);
+		var child = exec("git clone "+clone, { cwd: dir}, puts);
+
+		//child.stdout.on('data', function(data) {
+			//console.log('stdout: ' + data);
+		//});
+		//child.stderr.on('data', function(data) {
+			//console.log('stdout: ' + data);
+		//});
+
+		child.on('close', function(code) {
+			clonedRepos++;
+			console.log("downloaded: "+clonedRepos+"/"+repolist.length);
+
+			if(clonedRepos == repolist.length){
+				console.log("\n\n Am done!");
+			}
+		});
+		console.log("cloned: "+clone);
 	}
 }
 
@@ -83,8 +114,7 @@ scraperjs.StaticScraper.create(scrapeLink)
 		}
 
 		writeManifest(gems,dwnl_folder)
-		fetchImages(gems.repopics,dwnl_folder);
-		cloneRepos(gems.ghlinks,dwnl_folder);
+		fetchImages(gems,dwnl_folder);
 
 	})
 
