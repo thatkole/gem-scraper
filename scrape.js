@@ -4,10 +4,10 @@ var fs = require('fs');
 
 const path = require('path');
 
-var startpage = 2
+var startpage = 19
 var startpoint = (20 * startpage) - 20; //page 1 has 0 startingpoint
 
-for (s = startpage; s < 3; s++){
+for (s = startpage; s < 20; s++){
 	var folder = "page_"+s;
 	console.log("going for: "+folder+" starting:"+startpoint+"\n");
 	scrape(startpoint,folder);
@@ -26,7 +26,7 @@ function writeManifest(data,dir) {
 		if(err) {
 			return console.log(err);
 		}
-		console.log("saved bckup @ "+dir);
+		console.log("\nsaved bckup @ "+dir);
 	}); 
 }
 
@@ -41,10 +41,10 @@ function fetchImages(gems, dir) {
 
 		child.on('close', function(code) {
 			completed++;
-			console.log("downloaded: "+completed+"/"+imglist.length);
+			console.log("downloaded: "+completed+"/"+imglist.length+" @ "+dir);
 
 			if(completed == imglist.length){
-				console.log("\n\n Cloning repos.\n");
+				console.log("\n=== Cloning repos ===\n");
 				cloneRepos(gems.ghlinks,dir);
 			}
 		});
@@ -53,36 +53,46 @@ function fetchImages(gems, dir) {
 }
 
 function cloneRepos(repolist, dir) {
+	var clonedRepos = 0;
+
 	for(var i = 0; i < repolist.length; i++){
-		var clonedRepos = 0;
 		var ghbase = 'https://github.com/';
 		var clone = ghbase+repolist[i];
-		var child = exec("git clone "+clone, { cwd: dir}, puts);
 
-		//child.stdout.on('data', function(data) {
-			//console.log('stdout: ' + data);
-		//});
-		//child.stderr.on('data', function(data) {
-			//console.log('stdout: ' + data);
-		//});
+		var folderName = path.join(dir, path.basename(clone));
 
-		child.on('close', function(code) {
+		//only clone if repo folders don't exist
+		if (!fs.existsSync(folderName)){
+			console.log("now clonning: "+folderName);
+			var child = exec("git clone "+clone, { cwd: dir}, puts);
+
+			child.on('close', function(code) {
+				clonedRepos++;
+				console.log("completed cloning process: "+clonedRepos+"/"+repolist.length);
+
+				if(clonedRepos == repolist.length){
+					console.log("\n === done! ===");
+				}
+			});
+		} else{
 			clonedRepos++;
-			console.log("downloaded: "+clonedRepos+"/"+repolist.length);
+		}
 
-			if(clonedRepos == repolist.length){
-				console.log("\n\n Am done!");
-			}
-		});
-		console.log("cloned: "+clone);
 	}
+	
+	if(clonedRepos == repolist.length){
+		console.log("all repos cloned");
+	}else{
+		console.log("already cloned : "+clonedRepos);
+	}
+
 }
 
 function scrape(count, dwnl_folder){
 
-var scrapeLink = "http://www.android-gems.com/user/thatkole/?type=favorite&uid=1551650237972482&pageinfo_start="+startpoint;
+	var scrapeLink = "http://www.android-gems.com/user/thatkole/?type=favorite&uid=1551650237972482&pageinfo_start="+startpoint;
 
-scraperjs.StaticScraper.create(scrapeLink)
+	scraperjs.StaticScraper.create(scrapeLink)
 	.scrape(function($) {
 		var user = $(".heading-title a:first-child").map(function() {
 			return $(this).text().trim();
