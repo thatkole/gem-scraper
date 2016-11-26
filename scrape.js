@@ -4,10 +4,10 @@ var fs = require('fs');
 
 const path = require('path');
 
-var startpage = 19
+var startpage = 21
 var startpoint = (20 * startpage) - 20; //page 1 has 0 startingpoint
 
-for (s = startpage; s < 20; s++){
+for (s = startpage; s < startpage+1; s++){
 	var folder = "page_"+s;
 	console.log("going for: "+folder+" starting:"+startpoint+"\n");
 	scrape(startpoint,folder);
@@ -37,6 +37,7 @@ function fetchImages(gems, dir) {
 	for(var i = 0; i < imglist.length; i++){
 		var aPic = imglist[i];
 		var completed = 0;
+
 		var child = exec("wget -nc -P "+dir+" "+aPic, puts);
 
 		child.on('close', function(code) {
@@ -63,7 +64,6 @@ function cloneRepos(repolist, dir) {
 
 		//only clone if repo folders don't exist
 		if (!fs.existsSync(folderName)){
-			console.log("now clonning: "+folderName);
 			var child = exec("git clone "+clone, { cwd: dir}, puts);
 
 			child.on('close', function(code) {
@@ -82,7 +82,7 @@ function cloneRepos(repolist, dir) {
 	
 	if(clonedRepos == repolist.length){
 		console.log("all repos cloned");
-	}else{
+	}else if(clonedRepos > 0){
 		console.log("already cloned : "+clonedRepos);
 	}
 
