@@ -4,7 +4,7 @@ var fs = require('fs');
 
 const path = require('path');
 
-var startpage = 21
+var startpage = 18
 var startpoint = (20 * startpage) - 20; //page 1 has 0 startingpoint
 
 for (s = startpage; s < startpage+1; s++){
@@ -68,7 +68,7 @@ function cloneRepos(repolist, dir) {
 
 			child.on('close', function(code) {
 				clonedRepos++;
-				console.log("completed cloning process: "+clonedRepos+"/"+repolist.length);
+				console.log("cloned: "+clonedRepos+"/"+repolist.length+" "+clone);
 
 				if(clonedRepos == repolist.length){
 					console.log("\n === done! ===");
